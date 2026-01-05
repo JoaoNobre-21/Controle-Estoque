@@ -2,67 +2,93 @@ from database import conectar
 
 
 def cadastrar_produto(nome, quantidade, preco):
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO produtos (nome, quantidade, preco) values ( ?, ?, ?)",
-        (nome, quantidade, preco)
-    )
-    conn.commit()
-    conn.close()
-    print("Produto cadastrado com sucesso!")
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "INSERT INTO produtos (nome, quantidade, preco) VALUES (?, ?, ?)",
+            (nome, quantidade, preco)
+        )
+
+        conn.commit()
+        print("✅ Produto cadastrado com sucesso!")
+
+    except Exception as e:
+        print(f"❌ Erro ao cadastrar produto: {e}")
+
+    finally:
+        conn.close()
 
 
 def listar_produtos():
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
 
-    conn = conectar()
-    cursor = conn.cursor()
+        cursor.execute("SELECT * FROM produtos")
+        produtos = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM produtos")
-    produtos = cursor.fetchall()
+        if not produtos:
+            print("⚠️ Nenhum produto cadastrado.")
+            return
 
-    conn.close()
+        print("\n--- PRODUTOS CADASTRADOS ---")
+        for produto in produtos:
+            print(
+                f"ID: {produto[0]} | "
+                f"Nome: {produto[1]} | "
+                f"Quantidade: {produto[2]} | "
+                f"Preço: R$ {produto[3]:.2f}"
+            )
 
-    if not produtos:
-        print("⚠️ Nenhum produto cadastrado.")
-        return
+    except Exception as e:
+        print(f"❌ Erro ao listar produtos: {e}")
 
-    print("\n--- PRODUTOS CADASTRADOS ---")
-    for produto in produtos:
-        print(
-            f"ID: {produto[0]} | "
-            f"Nome: {produto[1]} | "
-            f"Quantidade: {produto[2]} | "
-            f"Preço: R$ {produto[3]:.2f}"
-        )
+    finally:
+        conn.close()
 
 
 def atualizar_produto(id_produto, quantidade, preco):
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE produtos SET quantidade = ?, preco =  ?, where id = ?",
-        (quantidade, preco, id_produto)
-    )
-    if cursor.rowcount == 0:
-        print("Produto não econtrado.")
-    else:
-        print("Produto atualizado com sucesso!")
-    conn.commit()
-    conn.close()
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "UPDATE produtos SET quantidade = ?, preco = ? WHERE id = ?",
+            (quantidade, preco, id_produto)
+        )
+
+        if cursor.rowcount == 0:
+            print("⚠️ Produto não encontrado.")
+        else:
+            print("🔄 Produto atualizado com sucesso!")
+
+        conn.commit()
+
+    except Exception as e:
+        print(f"❌ Erro ao atualizar produto: {e}")
+
+    finally:
+        conn.close()
 
 
 def remover_produto(id_produto):
-    
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute(
-        "DELETE FROM produtos WHERE id = ?",
-        (id_produto)
-    )
-    if cursor.rowcount == 0:
-        print("Produto não econtrado.")
-    else:
-        print("Produto atualizado com sucesso!")
-    conn.commit()
-    conn.close()
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM produtos WHERE id = ?", (id_produto,))
+
+        if cursor.rowcount == 0:
+            print("⚠️ Produto não encontrado.")
+        else:
+            print("🗑️ Produto removido com sucesso!")
+
+        conn.commit()
+
+    except Exception as e:
+        print(f"❌ Erro ao remover produto: {e}")
+
+    finally:
+        conn.close()

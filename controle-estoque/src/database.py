@@ -62,3 +62,33 @@ def listar_produtos():
         )
         conn.commit()
         conn.close()
+
+
+def atualizar_produto(id_produto, quantidade, preco):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE produtos SET quantidade = ?, preco =  ?, where id = ?",
+        (quantidade, preco, id_produto)
+    )
+    if cursor.rowcount == 0:
+        print("Produto não econtrado.")
+    else:
+        print("Produto atualizado com sucesso!")
+    conn.commit()
+    conn.close()
+
+
+def remover_produto(id_produto):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM produtos WHERE id = ?",
+        (id_produto)
+    )
+    if cursor.rowcount == 0:
+        print("Produto não econtrado.")
+    else:
+        print("Produto atualizado com sucesso!")
+    conn.commit()
+    conn.close()

@@ -1,0 +1,159 @@
+from database import criar_tabela
+from database import cadastrar_produto, listar_produtos
+
+
+def main():
+    criar_tabela()
+    print("Tabela de produtos criada com sucesso!")
+
+
+if __name__ == "__main__":
+    main()
+
+
+def menu():
+    print("\n=== CONTROLE DE ESTOQUE ===")
+    print("1 - Cadastrar produto")
+    print("2 - Listar produtos")
+    print("0 - Sair")
+
+
+def main():
+    criar_tabela()
+    while True:
+        menu()
+        opcao = input("Escolha um opção: ")
+        if opcao == "1":
+            nome = input("Nome do produto: ")
+            quantidade = int(input("Quantidade: "))
+            preco = float(input("Preço: "))
+            cadastrar_produto(nome, quantidade, preco)
+        elif opcao == "2":
+            listar_produtos()
+        elif opcao == "0":
+            print("Saindo do sistema...")
+            break
+        else:
+            print("Opcão invalida!")
+        if __name__ == "__main__":
+            main()
+   
+
+   from database import conectar
+
+
+def cadastrar_produto(nome, quantidade, preco):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO produtos (nome, quantidade, preco) values ( ?, ?, ?)",
+        (nome, quantidade, preco)
+    )
+    conn.commit()
+    conn.close()
+    print("Produto cadastrado com sucesso!")
+
+
+def listar_produtos():
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM produtos")
+    produtos = cursor.fetchall()
+
+    conn.close()
+
+    if not produtos:
+        print("⚠️ Nenhum produto cadastrado.")
+        return
+
+    print("\n--- PRODUTOS CADASTRADOS ---")
+    for produto in produtos:
+        print(
+            f"ID: {produto[0]} | "
+            f"Nome: {produto[1]} | "
+            f"Quantidade: {produto[2]} | "
+            f"Preço: R$ {produto[3]:.2f}"
+        )
+
+ESTOQUE
+def atualizar_produto(id_produto, quantidade, preco):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE produtos SET quantidade = ?, preco =  ?, where id = ?",
+        (quantidade, preco, id_produto)
+    )
+    if cursor.rowcount == 0:
+        print("Produto não econtrado.")
+    else:
+        print("Produto atualizado com sucesso!")
+    conn.commit()
+    conn.close()
+
+
+def remover_produto(id_produto):
+    
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        "DELETE FROM produtos WHERE id = ?",
+        (id_produto)
+    )
+    if cursor.rowcount == 0:
+        print("Produto não econtrado.")
+    else:
+        print("Produto atualizado com sucesso!")
+    conn.commit()
+    conn.close()
+
+MAIN
+
+from database import criar_tabela
+from estoque import (
+    cadastrar_produto,
+    listar_produtos,
+    atualizar_produto,
+    remover_produto
+)
+
+
+def menu():
+    print("\n=== CONTROLE DE ESTOQUE ===")
+    print("1 - Cadastrar produto")
+    print("2 - Listar produtos")
+    print("3 - Atualizar produtos")
+    print("4 - Remover produtos")
+    print("0 - Sair")
+
+
+def main():
+    criar_tabela()
+    while True:
+        menu()
+        opcao = input("Escolha um opção: ")
+        if opcao == "1":
+            nome = input("Nome do produto: ")
+            quantidade = int(input("Quantidade: "))
+            preco = float(input("Preço: "))
+            cadastrar_produto(nome, quantidade, preco)
+        elif opcao == "2":
+            listar_produtos()
+        elif opcao == "3":
+            id_produto = int(input("ID do produto: "))
+            quantidade = int(input("Nova quantidade: "))
+            preco = float(input("Novo preço: "))
+            atualizar_produto(id_produto, quantidade, preco)
+
+        elif opcao == "4":
+            id_produto = int(input("ID do produto: "))
+            remover_produto(id_produto)
+        elif opcao == "0":
+            print("Saindo do sistema...")
+            break
+        else:
+            print("Opcão invalida!")
+        if __name__ == "__main__":
+            main()
+

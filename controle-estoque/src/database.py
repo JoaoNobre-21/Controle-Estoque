@@ -23,5 +23,42 @@ def criar_tabela():
     """)
     conn.commit()
     conn.close()
-    
 
+
+def cadastrar_produto(nome, quantidade, preco):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO produtos (nome, quantidade, preco)
+        VALUES (?, ?, ?)
+    """, (nome, quantidade, preco))
+    conn.commit()
+    conn.close()
+    print(f"✅ Produto '{nome}' cadastrado com sucesso!")
+    conn.commit()
+    conn.close()
+
+
+def listar_produtos():
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM produtos")
+    produtos = cursor.fetchall()
+
+    conn.close()
+
+    if not produtos:
+        print("⚠️ Nenhum produto cadastrado.")
+        return
+
+    print("\n--- PRODUTOS CADASTRADOS ---")
+    for produto in produtos:
+        print(
+            f"ID: {produto[0]} | "
+            f"Nome: {produto[1]} | "
+            f"Quantidade: {produto[2]} | "
+            f"Preço: R$ {produto[3]:.2f}"
+        )
+        conn.commit()
+        conn.close()
